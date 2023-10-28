@@ -1,2 +1,6 @@
 # Jimmy-Jimmy-and-Jed
-Jimmy
+# A story of death, revenge, and enduring love.
+
+
+
+ 
