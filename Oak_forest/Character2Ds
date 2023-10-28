@@ -1,0 +1,73 @@
+#Jed(Player character/main protagonist)
+
+extends CharacterBody2D
+signal character_moved
+@export var speed = 140
+
+var can_lunge:bool = true
+
+func get_input():
+	var input_direction = Input.get_vector("left", "right", "up", "down")
+	velocity = input_direction * speed
+	
+func _physics_process(_delta):
+	
+	if Input.is_action_pressed("lunge")and Input.is_action_pressed("left"):
+		$AnimationPlayer.play("Lunge_l")
+#
+#
+	elif Input.is_action_pressed('right')and Input.is_action_pressed('lunge'):
+		$AnimationPlayer.play("lunge_r")
+#
+	elif Input.is_action_pressed("down")and Input.is_action_pressed("lunge"):
+		$AnimationPlayer.play("lunge_fwd")
+
+	elif Input.is_action_pressed('up')and Input.is_action_pressed('lunge'):
+		$AnimationPlayer.play("lunge_up")
+
+	elif Input.is_action_pressed('dodge') and Input.is_action_pressed("right"):
+		$AnimationPlayer.play("run_r")
+		position += Vector2(2,0)
+	elif Input.is_action_pressed('dodge') and Input.is_action_pressed('left'):
+		position += Vector2(-2,0)
+	elif Input.is_action_pressed('dodge') and Input.is_action_pressed('down'):
+		position += Vector2(0,2)
+	elif Input.is_action_pressed('dodge') and Input.is_action_pressed('up'):
+		$AnimationPlayer.play('run_up')
+		position += Vector2(0,-2)
+	elif Input.is_action_pressed('ui_right'):
+		$AnimationPlayer.play("ready_r")
+	elif Input.is_action_pressed("left"):
+		$AnimationPlayer.play("ready_l")
+	elif Input.is_action_pressed("up"):
+		$AnimationPlayer.play("ready_up")
+	elif Input.is_action_pressed("down"):
+		$AnimationPlayer.play("ready_fwd")
+	else:
+		$AnimationPlayer.play("idle")
+
+	get_input()
+	move_and_slide()
+
+#lil_rat (one type of the node Rats! that is a child of the main node Oak_forest)
+extends CharacterBody2D
+
+var speed = 85
+var player_chase = false
+var player = null
+
+func _physics_process(delta):
+	if player_chase:
+		position += (player.position - position)/speed
+
+
+func _on_area_2d_body_entered(body):
+	player = body
+	player_chase = true
+
+
+func _on_area_2d_body_exited(body):
+	player = null
+	player_chase = false
+
+#interestingly the lil_rats will chase me until there is more than one. At that point the first one that started to chase will continue to do so, while the other lil_rats will chase the first one.
